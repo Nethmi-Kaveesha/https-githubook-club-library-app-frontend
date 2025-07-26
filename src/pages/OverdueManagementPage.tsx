@@ -203,25 +203,15 @@ const OverdueReadersPage: React.FC = () => {
         }
     };
 
-    // Prepare data for chart: total overdue books per reader
-    const chartData = {
-        labels: readers.map((r) => r.readerName),
-        datasets: [
-            {
-                label: "Overdue Books Count",
-                data: readers.map((r) => {
-                    // Count overdue books for this reader
-                    if (r.readerId === selectedReaderId) return overdueBooks.length;
-                    // For other readers, no book data loaded => 0
-                    return 0;
-                }),
-                backgroundColor: "rgba(20, 184, 166, 0.7)", // teal-500
-            },
-        ],
-    };
-
     return (
-        <div className="bg-gray-900 text-gray-100 min-h-screen p-6 mt-10">
+        <div
+            className="min-h-screen p-6 mt-12 text-gray-100"
+            style={{
+                background:
+                    "linear-gradient(135deg, #000000 0%, #008080 50%, #006400 100%)", // black → teal → green
+                minHeight: "100vh",
+            }}
+        >
             <div className="max-w-5xl mx-auto">
                 <h1 className="text-xl sm:text-2xl font-bold text-teal-300 mb-4">
                     📚 Overdue Readers
@@ -288,7 +278,9 @@ const OverdueReadersPage: React.FC = () => {
                                     <h2 className="text-sm font-semibold text-teal-400">
                                         Overdue Books{" "}
                                         {selectedReaderId && (
-                                            <span className="text-gray-400">for ID: {selectedReaderId}</span>
+                                            <span className="text-gray-400">
+                                                for ID: {selectedReaderId}
+                                            </span>
                                         )}
                                     </h2>
                                     <div className="space-x-2">
@@ -323,8 +315,8 @@ const OverdueReadersPage: React.FC = () => {
                                             <li key={idx}>
                                                 📖 <strong>{book.bookTitle}</strong> —{" "}
                                                 <span className="text-red-400">
-                          Due {new Date(book.dueDate).toLocaleDateString()}
-                        </span>
+                                                    Due {new Date(book.dueDate).toLocaleDateString()}
+                                                </span>
                                             </li>
                                         ))}
                                     </ul>
@@ -340,7 +332,10 @@ const OverdueReadersPage: React.FC = () => {
                                 </h3>
                                 <Bar
                                     data={{
-                                        labels: [readers.find((r) => r.readerId === selectedReaderId)?.readerName || ""],
+                                        labels: [
+                                            readers.find((r) => r.readerId === selectedReaderId)
+                                                ?.readerName || "",
+                                        ],
                                         datasets: [
                                             {
                                                 label: "Overdue Books Count",

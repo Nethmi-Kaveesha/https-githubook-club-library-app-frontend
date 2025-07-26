@@ -45,7 +45,11 @@ const LendingPage: React.FC = () => {
             const booksJson = await booksRes.json();
 
             const readersArray = Array.isArray(readersJson.data) ? readersJson.data : [];
-            const booksArray = Array.isArray(booksJson) ? booksJson : (Array.isArray(booksJson.books) ? booksJson.books : []);
+            const booksArray = Array.isArray(booksJson)
+                ? booksJson
+                : Array.isArray(booksJson.books)
+                    ? booksJson.books
+                    : [];
 
             setReaders(readersArray);
             setBooks(booksArray);
@@ -146,21 +150,24 @@ const LendingPage: React.FC = () => {
     };
 
     return (
-        <div className="p-6 bg-gray-900 min-h-screen text-white mt-10">
-            <div className="max-w-7xl mx-auto">
+        <div className="p-4 sm:p-6 bg-gray-900 min-h-screen text-white mt-10">
+            <div className="max-w-7xl mx-auto w-full">
+                {/* Header + action buttons */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0">
                     <div>
-                        <h1 className="text-3xl font-bold text-teal-400">Lendings</h1>
-                        <p className="text-gray-400 mt-1">Total Lendings: {lendings.length}</p>
+                        <h1 className="text-2xl sm:text-3xl font-bold text-teal-400">Lendings</h1>
+                        <p className="text-gray-400 mt-1 text-sm sm:text-base">
+                            Total Lendings: {lendings.length}
+                        </p>
                     </div>
 
-                    <div className="flex space-x-4">
+                    <div className="flex flex-wrap sm:flex-nowrap gap-3 sm:gap-4">
                         <button
                             onClick={() => {
                                 setSelectedLending(null);
                                 setIsAddDialogOpen(true);
                             }}
-                            className="flex items-center space-x-2 bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                            className="flex items-center space-x-2 bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 whitespace-nowrap"
                         >
                             <MdAdd className="w-5 h-5" />
                             <span>Create Lending</span>
@@ -169,13 +176,14 @@ const LendingPage: React.FC = () => {
                         <button
                             onClick={sendOverdueNotifications}
                             disabled={notifyLoading}
-                            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400"
+                            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400 whitespace-nowrap"
                         >
                             {notifyLoading ? "Sending..." : "Send Overdue Notifications"}
                         </button>
                     </div>
                 </div>
 
+                {/* Notification message */}
                 {notifyMessage && (
                     <p
                         className={`mb-4 text-sm ${
@@ -188,22 +196,26 @@ const LendingPage: React.FC = () => {
                     </p>
                 )}
 
-                <LendingsTable
-                    lendings={lendings}
-                    onView={(lending) => {
-                        setSelectedLending(lending);
-                        setIsViewDialogOpen(true);
-                    }}
-                    onEdit={(lending) => {
-                        setSelectedLending(lending);
-                        setIsEditDialogOpen(true);
-                    }}
-                    onDelete={(lending) => {
-                        setSelectedLending(lending);
-                        setIsDeleteDialogOpen(true);
-                    }}
-                />
+                {/* Table wrapper with horizontal scroll on small devices */}
+                <div className="overflow-x-auto rounded-lg shadow-lg bg-[#1e293b] p-2">
+                    <LendingsTable
+                        lendings={lendings}
+                        onView={(lending) => {
+                            setSelectedLending(lending);
+                            setIsViewDialogOpen(true);
+                        }}
+                        onEdit={(lending) => {
+                            setSelectedLending(lending);
+                            setIsEditDialogOpen(true);
+                        }}
+                        onDelete={(lending) => {
+                            setSelectedLending(lending);
+                            setIsDeleteDialogOpen(true);
+                        }}
+                    />
+                </div>
 
+                {/* Dialogs */}
                 <Dialog
                     isOpen={isAddDialogOpen}
                     onCancel={cancelDialog}

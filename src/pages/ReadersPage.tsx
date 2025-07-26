@@ -140,22 +140,22 @@ const ReadersPage: React.FC = () => {
         <div className="p-6 bg-[#0f172a] min-h-screen mt-10 text-teal-100 font-sans">
             <ToastContainer />
 
-            <div className="max-w-7xl mx-auto">
-                <div className="flex justify-between items-center mb-6">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0">
                     <div>
                         <h1 className="text-3xl font-bold text-teal-300">Readers</h1>
                         <p className="text-teal-400 mt-1">Total Readers: {readers.length}</p>
                     </div>
-                    <div className="flex space-x-2">
+                    <div className="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0 w-full sm:w-auto">
                         <button
                             onClick={exportToCSV}
-                            className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg transition"
+                            className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg transition w-full sm:w-auto"
                         >
                             Export CSV
                         </button>
                         <button
                             onClick={handleAddReader}
-                            className="flex items-center space-x-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg transition"
+                            className="flex items-center justify-center space-x-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg transition w-full sm:w-auto"
                         >
                             <MdAdd className="w-5 h-5" />
                             <span>Add Reader</span>
@@ -187,11 +187,14 @@ const ReadersPage: React.FC = () => {
                 ) : filteredReaders.length === 0 ? (
                     <p className="text-center text-teal-400 py-10">No readers found.</p>
                 ) : (
-                    <ReadersTable
-                        readers={filteredReaders}
-                        onEdit={handleEditReader}
-                        onDelete={handleDeleteReader}
-                    />
+                    // Wrap the table for horizontal scroll on small devices
+                    <div className="overflow-x-auto">
+                        <ReadersTable
+                            readers={filteredReaders}
+                            onEdit={handleEditReader}
+                            onDelete={handleDeleteReader}
+                        />
+                    </div>
                 )}
 
                 <Dialog

@@ -23,7 +23,8 @@ const BooksPage: React.FC = () => {
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
 
   useEffect(() => {
-    axios.get("http://localhost:3000/api/books")
+    axios
+        .get("http://localhost:3000/api/books")
         .then((res) => setBooks(res.data))
         .catch(() => alert("Failed to load books"));
   }, []);
@@ -70,7 +71,7 @@ const BooksPage: React.FC = () => {
             (book.isbn && book.isbn.toLowerCase().includes(query))
         );
       })
-      .filter((book) => selectedCategory === "All" ? true : (book.category || "Uncategorized") === selectedCategory)
+      .filter((book) => (selectedCategory === "All" ? true : (book.category || "Uncategorized") === selectedCategory))
       .filter((book) => book.price >= minPrice && book.price <= maxPrice)
       .sort((a, b) => {
         const valA = (a[sortField] ?? "").toString().toLowerCase();
@@ -94,7 +95,8 @@ const BooksPage: React.FC = () => {
   return (
       <div className="p-6 bg-[#0f172a] min-h-screen mt-10 text-teal-100 font-sans">
         <div className="max-w-7xl mx-auto">
-          <div className="flex justify-between items-center mb-6">
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3 sm:gap-0">
             <div>
               <h1 className="text-3xl font-bold text-teal-300">Books</h1>
               <p className="text-teal-400 mt-1">Total Books: {books.length}</p>
@@ -104,29 +106,32 @@ const BooksPage: React.FC = () => {
                   setSelectedBook(null);
                   setIsAddDialogOpen(true);
                 }}
-                className="flex items-center space-x-2 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg transition"
+                className="flex items-center space-x-2 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg transition whitespace-nowrap"
             >
               <MdAdd className="w-5 h-5" />
               <span>Add Book</span>
             </button>
           </div>
 
-          <div className="flex flex-wrap items-center gap-4 mb-6">
+          {/* Filters */}
+          <div className="flex flex-wrap gap-4 mb-6">
             <input
                 type="text"
                 placeholder="Search by title, author, ISBN..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="border border-teal-700 bg-[#1e293b] text-teal-300 placeholder-teal-500 rounded px-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                className="border border-teal-700 bg-[#1e293b] text-teal-300 placeholder-teal-500 rounded px-4 py-2 flex-grow min-w-[180px] focus:outline-none focus:ring-2 focus:ring-teal-400"
             />
 
             <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="border border-teal-700 bg-[#1e293b] text-teal-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                className="border border-teal-700 bg-[#1e293b] text-teal-300 rounded px-4 py-2 min-w-[140px] focus:outline-none focus:ring-2 focus:ring-teal-400"
             >
               {categories.map((cat) => (
-                  <option key={cat} value={cat}>{cat}</option>
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
               ))}
             </select>
 
@@ -135,7 +140,7 @@ const BooksPage: React.FC = () => {
                 placeholder="Min Price"
                 value={minPrice}
                 onChange={(e) => setMinPrice(Number(e.target.value))}
-                className="border border-teal-700 bg-[#1e293b] text-teal-300 placeholder-teal-500 rounded px-4 py-2 w-24 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                className="border border-teal-700 bg-[#1e293b] text-teal-300 placeholder-teal-500 rounded px-4 py-2 w-24 sm:w-28 focus:outline-none focus:ring-2 focus:ring-teal-400"
             />
 
             <input
@@ -143,13 +148,13 @@ const BooksPage: React.FC = () => {
                 placeholder="Max Price"
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(Number(e.target.value))}
-                className="border border-teal-700 bg-[#1e293b] text-teal-300 placeholder-teal-500 rounded px-4 py-2 w-24 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                className="border border-teal-700 bg-[#1e293b] text-teal-300 placeholder-teal-500 rounded px-4 py-2 w-24 sm:w-28 focus:outline-none focus:ring-2 focus:ring-teal-400"
             />
 
             <select
                 value={sortField}
                 onChange={(e) => setSortField(e.target.value as "title" | "price" | "quantity")}
-                className="border border-teal-700 bg-[#1e293b] text-teal-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                className="border border-teal-700 bg-[#1e293b] text-teal-300 rounded px-4 py-2 min-w-[140px] focus:outline-none focus:ring-2 focus:ring-teal-400"
             >
               <option value="title">Sort: Title</option>
               <option value="price">Sort: Price</option>
@@ -158,7 +163,7 @@ const BooksPage: React.FC = () => {
 
             <button
                 onClick={() => setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))}
-                className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded transition"
+                className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded transition whitespace-nowrap"
             >
               {sortOrder === "asc" ? "Asc" : "Desc"}
             </button>
@@ -173,15 +178,19 @@ const BooksPage: React.FC = () => {
                   setSortField("title");
                   setCurrentPage(1);
                 }}
-                className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded transition"
+                className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded transition whitespace-nowrap"
             >
               Reset
             </button>
           </div>
 
-          <BooksTable books={paginatedBooks} onEdit={handleEdit} onDelete={handleDelete} />
+          {/* Books Table - horizontally scrollable on small screens */}
+          <div className="overflow-x-auto">
+            <BooksTable books={paginatedBooks} onEdit={handleEdit} onDelete={handleDelete} />
+          </div>
 
-          <div className="flex justify-center items-center mt-6 space-x-4 text-teal-200">
+          {/* Pagination */}
+          <div className="flex flex-col sm:flex-row justify-center items-center mt-6 space-y-2 sm:space-y-0 sm:space-x-4 text-teal-200">
             <button
                 onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
                 disabled={currentPage === 1}
@@ -189,7 +198,9 @@ const BooksPage: React.FC = () => {
             >
               Prev
             </button>
-            <span>Page {currentPage} of {totalPages}</span>
+            <span>
+            Page {currentPage} of {totalPages}
+          </span>
             <button
                 onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
                 disabled={currentPage === totalPages}
@@ -199,6 +210,7 @@ const BooksPage: React.FC = () => {
             </button>
           </div>
 
+          {/* Dialogs */}
           <Dialog
               isOpen={isAddDialogOpen}
               onCancel={() => setIsAddDialogOpen(false)}
@@ -225,9 +237,7 @@ const BooksPage: React.FC = () => {
               }}
               title="Edit Book"
           >
-            <div id="edit-book-dialog">
-              {selectedBook && <BookForm book={selectedBook} onSubmit={handleFormSubmit} />}
-            </div>
+            <div id="edit-book-dialog">{selectedBook && <BookForm book={selectedBook} onSubmit={handleFormSubmit} />}</div>
           </Dialog>
 
           <Dialog
@@ -239,7 +249,9 @@ const BooksPage: React.FC = () => {
               onConfirm={confirmDelete}
               title="Delete Book"
           >
-            <p>Are you sure you want to delete <strong>{selectedBook?.title}</strong>?</p>
+            <p>
+              Are you sure you want to delete <strong>{selectedBook?.title}</strong>?
+            </p>
           </Dialog>
         </div>
       </div>
